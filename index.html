@@ -3,19 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Countdown de Cumpleaños</title>
+<title>Cuenta Regresiva</title>
+<meta name="description" content="Crea una cuenta regresiva para eventos, cumpleaños, aniversarios, viajes, exámenes o lanzamientos.">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-<!--
-  ══════════════════════════════════════
-  GOOGLE ADSENSE — 3 pasos para activar:
-  1. Crea cuenta en adsense.google.com
-  2. Reemplaza ca-pub-XXXXXXXXXX con tu Publisher ID
-  3. Reemplaza cada SLOT-ID con el ID de cada bloque de anuncio
-  ══════════════════════════════════════
--->
+<!-- GOOGLE ADSENSE -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7501781065080281"
      crossorigin="anonymous"></script>
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,8 +22,8 @@
     --num-color: #c8c8c8;
     --label-color: #555;
     --shadow: rgba(0,0,0,0.9);
-    --card-h: clamp(58px, 14vw, 110px);
-    --card-w: clamp(44px, 10.5vw, 82px);
+    --card-h: clamp(52px, 12vw, 108px);
+    --card-w: clamp(38px, 8.8vw, 76px);
     --fs: var(--card-h);
   }
 
@@ -43,7 +38,6 @@
     overflow-x: hidden;
   }
 
-  /* Banner fijo inferior — siempre visible */
   .ad-banner-fixed {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -57,9 +51,9 @@
     padding: 5px 0;
   }
 
-  /* Sección de anuncio inline */
   .ad-section {
     width: 100%;
+    max-width: 760px;
     border-top: 1px solid #161616;
     border-bottom: 1px solid #161616;
     background: #080808;
@@ -69,6 +63,7 @@
     align-items: center;
     gap: 4px;
   }
+
   .ad-label {
     font-size: .42rem;
     letter-spacing: .32em;
@@ -76,27 +71,26 @@
     text-transform: uppercase;
   }
 
-  /* Contenedor principal con espacio para banner fijo */
   .screen-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding-bottom: 72px;
+    padding-bottom: 76px;
     flex: 1;
     justify-content: center;
   }
 
-  /* ── SETUP ── */
   #setup-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
     animation: fadeIn .5s ease;
-    padding: 28px 20px 16px;
+    padding: 28px 18px 16px;
     width: 100%;
   }
+
   .setup-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(2.2rem, 9vw, 4.5rem);
@@ -105,155 +99,305 @@
     text-align: center;
     line-height: 1;
   }
+
   .setup-subtitle {
-    font-size: .7rem; letter-spacing: .35em;
-    color: var(--label-color); text-transform: uppercase;
-    text-align: center; margin-bottom: 2px;
+    font-size: .7rem;
+    letter-spacing: .35em;
+    color: var(--label-color);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 2px;
   }
-  .input-group { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .input-label { font-size: .6rem; letter-spacing: .3em; color: var(--label-color); text-transform: uppercase; }
 
-  input[type="date"] {
-    background: #111; border: 1px solid #222; border-radius: 4px;
-    color: var(--num-color); font-family: 'Share Tech Mono', monospace;
-    font-size: 1rem; padding: 12px 20px; outline: none; cursor: pointer;
-    letter-spacing: .1em; text-align: center;
-    -webkit-appearance: none; appearance: none; width: 230px;
-    transition: border-color .2s;
+  .form-card {
+    width: min(92vw, 430px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
   }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .input-label {
+    font-size: .6rem;
+    letter-spacing: .25em;
+    color: var(--label-color);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  input[type="date"], input[type="text"], select {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 8px;
+    color: var(--num-color);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .95rem;
+    padding: 12px 14px;
+    outline: none;
+    letter-spacing: .06em;
+    text-align: center;
+    width: 100%;
+    transition: border-color .2s, background .2s;
+  }
+
   input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.45); cursor: pointer; }
-  input[type="date"]:focus { border-color: #444; }
+  input:focus, select:focus { border-color: #555; background: #141414; }
 
-  .btn-start {
-    background: none; border: 1px solid #2e2e2e; border-radius: 4px;
-    color: var(--num-color); font-family: 'Share Tech Mono', monospace;
-    font-size: .8rem; letter-spacing: .3em; padding: 13px 36px;
-    cursor: pointer; text-transform: uppercase;
+  .hint {
+    color: #343434;
+    font-size: .56rem;
+    letter-spacing: .12em;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .btn-start, .btn-share {
+    background: none;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    color: var(--num-color);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .22em;
+    padding: 13px 22px;
+    cursor: pointer;
+    text-transform: uppercase;
     transition: background .2s, border-color .2s;
   }
-  .btn-start:hover { background: #1a1a1a; border-color: #555; }
+
+  .btn-start:hover, .btn-share:hover { background: #1a1a1a; border-color: #555; }
 
   .btn-random {
-    background: none; border: none; color: var(--label-color);
-    font-family: 'Share Tech Mono', monospace; font-size: .6rem;
-    letter-spacing: .22em; cursor: pointer; text-transform: uppercase;
-    text-decoration: underline; text-underline-offset: 4px; transition: color .2s;
+    background: none;
+    border: none;
+    color: var(--label-color);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .58rem;
+    letter-spacing: .18em;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color .2s;
   }
+
   .btn-random:hover { color: #777; }
 
-  /* ── COUNTDOWN ── */
   #countdown-screen {
-    display: none; flex-direction: column; align-items: center;
+    display: none;
+    flex-direction: column;
+    align-items: center;
     gap: clamp(12px, 3.5vw, 24px);
     animation: fadeIn .8s ease;
     padding: 20px 10px 12px;
     width: 100%;
   }
-  .countdown-header { text-align: center; }
+
+  .countdown-header { text-align: center; max-width: 92vw; }
   .countdown-label { font-size: .6rem; letter-spacing: .4em; color: var(--label-color); text-transform: uppercase; margin-bottom: 5px; }
-  .countdown-date { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.3rem, 5vw, 2.5rem); letter-spacing: .18em; color: var(--num-color); }
+  .countdown-date { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.35rem, 5vw, 2.6rem); letter-spacing: .16em; color: var(--num-color); }
+  .meta-info {
+    margin-top: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    color: #444;
+    font-size: clamp(.56rem, 2vw, .72rem);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
 
   .clock-grid {
-    display: flex; align-items: flex-start;
-    gap: clamp(8px, 2.5vw, 22px); flex-wrap: wrap; justify-content: center;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(6px, 2vw, 18px);
+    flex-wrap: wrap;
+    justify-content: center;
   }
+
   .clock-unit { display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .digits-row { display: flex; gap: clamp(3px, 1vw, 7px); }
   .unit-label { font-size: clamp(.5rem, 1.5vw, .65rem); letter-spacing: .38em; color: var(--label-color); text-transform: uppercase; }
 
   .sep {
-    display: flex; flex-direction: column; justify-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     gap: clamp(7px, 2vw, 14px);
     padding-bottom: clamp(24px, 6vw, 44px);
     margin-top: clamp(4px, 1vw, 8px);
   }
+
   .dot { width: clamp(5px,1.2vw,8px); height: clamp(5px,1.2vw,8px); background: #2a2a2a; border-radius: 50%; }
 
-  /* ── FLIP CARD ── */
   .flip-card {
-    position: relative; width: var(--card-w); height: var(--card-h);
-    border-radius: 6px; perspective: 600px; isolation: isolate;
+    position: relative;
+    width: var(--card-w);
+    height: var(--card-h);
+    border-radius: 6px;
+    perspective: 600px;
+    isolation: isolate;
   }
+
   .fc-upper, .fc-lower, .fc-flap {
-    position: absolute; left: 0; right: 0; height: 50%; overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50%;
+    overflow: hidden;
   }
+
   .fc-upper { top: 0; border-radius: 6px 6px 0 0; background: var(--upper-bg); z-index: 2; }
   .fc-lower { bottom: 0; border-radius: 0 0 6px 6px; background: var(--lower-bg); z-index: 2; }
+
   .flip-card::after {
-    content: ''; position: absolute; top: 50%; left: 0; right: 0;
-    height: 2px; background: var(--hinge-color); transform: translateY(-50%); z-index: 30;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--hinge-color);
+    transform: translateY(-50%);
+    z-index: 30;
   }
+
   .fc-digit {
-    font-family: 'Bebas Neue', sans-serif; font-size: var(--fs);
-    line-height: 1; color: var(--num-color);
-    position: absolute; left: 0; right: 0; text-align: center;
-    user-select: none; letter-spacing: .02em;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs);
+    line-height: 1;
+    color: var(--num-color);
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    user-select: none;
+    letter-spacing: .02em;
   }
+
   .fc-upper .fc-digit { top: 0; }
   .fc-lower .fc-digit { top: -100%; }
 
   .fc-flap-top {
-    top: 0; border-radius: 6px 6px 0 0; background: var(--upper-bg);
-    transform-origin: bottom center; z-index: 15; box-shadow: 0 4px 16px var(--shadow);
+    top: 0;
+    border-radius: 6px 6px 0 0;
+    background: var(--upper-bg);
+    transform-origin: bottom center;
+    z-index: 15;
+    box-shadow: 0 4px 16px var(--shadow);
   }
+
   .fc-flap-top .fc-digit { top: 0; }
+
   .fc-flap-bottom {
-    bottom: 0; border-radius: 0 0 6px 6px; background: var(--lower-bg);
-    transform-origin: top center; transform: rotateX(90deg);
-    z-index: 15; box-shadow: 0 8px 24px var(--shadow);
+    bottom: 0;
+    border-radius: 0 0 6px 6px;
+    background: var(--lower-bg);
+    transform-origin: top center;
+    transform: rotateX(90deg);
+    z-index: 15;
+    box-shadow: 0 8px 24px var(--shadow);
   }
+
   .fc-flap-bottom .fc-digit { top: -100%; }
 
   @keyframes foldAway { from { transform: rotateX(0deg); } to { transform: rotateX(-90deg); } }
   @keyframes unfoldIn  { from { transform: rotateX(90deg); } to { transform: rotateX(0deg); } }
-  .fc-flap-top.go    { animation: foldAway .22s ease-in  forwards; }
-  .fc-flap-bottom.go { animation: unfoldIn  .22s ease-out .22s forwards; }
+  .fc-flap-top.go { animation: foldAway .22s ease-in forwards; }
+  .fc-flap-bottom.go { animation: unfoldIn .22s ease-out .22s forwards; }
+
+  .action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
   .btn-reset {
-    background: none; border: none; color: #2e2e2e;
-    font-family: 'Share Tech Mono', monospace; font-size: .58rem;
-    letter-spacing: .28em; cursor: pointer; text-transform: uppercase;
-    transition: color .2s; margin-top: 2px;
+    background: none;
+    border: none;
+    color: #2e2e2e;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .58rem;
+    letter-spacing: .28em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color .2s;
+    margin-top: 2px;
+    padding: 12px;
   }
+
   .btn-reset:hover { color: #555; }
 
-  /* ── ES HOY ── */
   #esHoy-screen {
-    display: none; position: fixed; inset: 0;
-    background: #000; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 16px; z-index: 300;
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 300;
     animation: fadeIn 1s ease;
-    padding-bottom: 72px;
+    padding: 20px 10px 76px;
   }
+
   .esHoy-text {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(5rem, 24vw, 16rem);
-    color: #fff; letter-spacing: .06em; line-height: .88;
-    text-align: center; animation: pulse 2.2s ease-in-out infinite;
+    color: #fff;
+    letter-spacing: .06em;
+    line-height: .88;
+    text-align: center;
+    animation: pulse 2.2s ease-in-out infinite;
   }
+
   .esHoy-sub {
     font-size: clamp(.55rem, 2vw, .85rem);
-    letter-spacing: .5em; color: #2a2a2a; text-transform: uppercase;
+    letter-spacing: .35em;
+    color: #2a2a2a;
+    text-transform: uppercase;
+    text-align: center;
   }
+
   .btn-reset-esHoy {
-    margin-top: 16px; background: none; border: 1px solid #1e1e1e;
-    color: #2e2e2e; font-family: 'Share Tech Mono', monospace;
-    font-size: .6rem; letter-spacing: .28em; padding: 10px 26px;
-    cursor: pointer; text-transform: uppercase;
+    margin-top: 16px;
+    background: none;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+    color: #2e2e2e;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .28em;
+    padding: 10px 26px;
+    cursor: pointer;
+    text-transform: uppercase;
     transition: color .2s, border-color .2s;
   }
+
   .btn-reset-esHoy:hover { color: #555; border-color: #444; }
 
   @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
   @keyframes pulse  { 0%,100% { opacity:1; } 50% { opacity:.8; } }
 
   ins.adsbygoogle { display: block; }
+
+  @media (max-width: 520px) {
+    .sep { display: none; }
+    .clock-grid { gap: 15px; }
+    .ad-section { max-width: 100%; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ══ BANNER FIJO INFERIOR — visible en todas las pantallas ══ -->
 <div class="ad-banner-fixed">
   <ins class="adsbygoogle"
        style="display:inline-block;width:320px;height:50px"
@@ -264,14 +408,12 @@
 
 <div class="screen-wrap">
 
-  <!-- ══ PANTALLA 1: SETUP ══ -->
   <div id="setup-screen">
     <div>
-      <p class="setup-subtitle">Cuenta regresiva para</p>
-      <h1 class="setup-title">Tu Cumpleaños</h1>
+      <p class="setup-subtitle">Crea una</p>
+      <h1 class="setup-title">Cuenta Regresiva</h1>
     </div>
 
-    <!-- AD 300×250 en pantalla de inicio -->
     <div class="ad-section">
       <span class="ad-label">Publicidad</span>
       <ins class="adsbygoogle"
@@ -281,19 +423,39 @@
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <div class="input-group">
-      <label class="input-label" for="dateInput">Fecha de Cumpleaños</label>
-      <input type="date" id="dateInput">
-      <button class="btn-random" onclick="setRandom()">↻ Fecha Aleatoria</button>
+    <div class="form-card">
+      <div class="input-group">
+        <label class="input-label" for="eventNameInput">Nombre del evento</label>
+        <input type="text" id="eventNameInput" maxlength="40" placeholder="Ej: Examen final">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="countdownType">Tipo de cuenta</label>
+        <select id="countdownType" onchange="handleTypeChange()">
+          <option value="event">Evento único</option>
+          <option value="birthday">Cumpleaños / aniversario</option>
+        </select>
+        <p class="hint" id="typeHint">Solo acepta fechas desde hoy hacia adelante.</p>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="dateInput" id="dateLabel">Fecha del evento</label>
+        <input type="date" id="dateInput">
+        <button class="btn-random" onclick="setRandom()">↻ Fecha aleatoria</button>
+      </div>
+
+      <button class="btn-start" onclick="startCountdown()">Iniciar cuenta</button>
     </div>
-    <button class="btn-start" onclick="startCountdown()">Iniciar Countdown</button>
   </div>
 
-  <!-- ══ PANTALLA 2: COUNTDOWN ══ -->
   <div id="countdown-screen">
     <div class="countdown-header">
       <p class="countdown-label">Faltan para</p>
       <div class="countdown-date" id="targetDateLabel">—</div>
+      <div class="meta-info" id="metaInfo">
+        <span id="yearsPassedLabel"></span>
+        <span id="nextEventLabel"></span>
+      </div>
     </div>
 
     <div class="clock-grid">
@@ -302,6 +464,7 @@
           <div class="flip-card" id="d0"></div>
           <div class="flip-card" id="d1"></div>
           <div class="flip-card" id="d2"></div>
+          <div class="flip-card" id="d3"></div>
         </div>
         <span class="unit-label">Días</span>
       </div>
@@ -331,7 +494,6 @@
       </div>
     </div>
 
-    <!-- AD 320×100 debajo del reloj -->
     <div class="ad-section">
       <span class="ad-label">Publicidad</span>
       <ins class="adsbygoogle"
@@ -341,17 +503,18 @@
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <button class="btn-reset" onclick="resetAll()">← Cambiar fecha</button>
+    <div class="action-row">
+      <button class="btn-share" onclick="shareCountdown()">Compartir</button>
+      <button class="btn-reset" onclick="resetAll()">← Cambiar fecha</button>
+    </div>
   </div>
 
-</div><!-- /screen-wrap -->
+</div>
 
-<!-- ══ PANTALLA 3: ES HOY ══ -->
 <div id="esHoy-screen">
   <div class="esHoy-text">ES<br>HOY</div>
-  <div class="esHoy-sub">¡Feliz Cumpleaños!</div>
+  <div class="esHoy-sub" id="esHoySub">Tu evento ha llegado</div>
 
-  <!-- AD pequeño en celebración -->
   <div class="ad-section" style="background:transparent; border-color:#111; margin-top:8px;">
     <span class="ad-label">Publicidad</span>
     <ins class="adsbygoogle"
@@ -367,7 +530,32 @@
 <script>
   let targetDate = null;
   let intervalId = null;
-  const ALL_IDS = ['d0','d1','d2','h0','h1','m0','m1','s0','s1'];
+  let currentMode = 'event';
+  let currentEventName = 'Mi evento';
+  let originalDateValue = null;
+
+  const ALL_IDS = ['d0','d1','d2','d3','h0','h1','m0','m1','s0','s1'];
+
+  function todayStart() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+
+  function toInputDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function fromInputDate(value) {
+    const [y, m, d] = value.split('-').map(Number);
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+  }
+
+  function formatDate(date) {
+    return date.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+  }
 
   function cardHTML(ch) {
     return `<div class="fc-upper"><span class="fc-digit">${ch}</span></div>
@@ -387,7 +575,10 @@
   }
 
   function setGroup(ids, str) {
-    str.split('').forEach((ch, i) => { const el = document.getElementById(ids[i]); if (el) flip(el, ch); });
+    str.split('').forEach((ch, i) => {
+      const el = document.getElementById(ids[i]);
+      if (el) flip(el, ch);
+    });
   }
 
   function initCards() {
@@ -398,36 +589,179 @@
     });
   }
 
+  function handleTypeChange() {
+    const type = document.getElementById('countdownType').value;
+    const dateInput = document.getElementById('dateInput');
+    const hint = document.getElementById('typeHint');
+    const label = document.getElementById('dateLabel');
+
+    if (type === 'event') {
+      dateInput.min = toInputDate(todayStart());
+      label.textContent = 'Fecha del evento';
+      hint.textContent = 'Solo acepta fechas desde hoy hacia adelante.';
+      if (dateInput.value && fromInputDate(dateInput.value) < todayStart()) {
+        dateInput.value = '';
+      }
+    } else {
+      dateInput.removeAttribute('min');
+      label.textContent = 'Fecha de nacimiento o aniversario';
+      hint.textContent = 'Puede ser una fecha pasada. Se calculará el próximo aniversario.';
+    }
+  }
+
   function setRandom() {
+    const type = document.getElementById('countdownType').value;
+    const now = todayStart();
+    let dt;
+
+    if (type === 'birthday') {
+      const year = now.getFullYear() - (Math.floor(Math.random() * 30) + 10);
+      const month = Math.floor(Math.random() * 12);
+      const day = Math.floor(Math.random() * 28) + 1;
+      dt = new Date(year, month, day);
+    } else {
+      const daysAhead = Math.floor(Math.random() * 365) + 1;
+      dt = new Date(now);
+      dt.setDate(now.getDate() + daysAhead);
+    }
+
+    document.getElementById('dateInput').value = toInputDate(dt);
+  }
+
+  function getNextAnniversary(dateValue) {
     const now = new Date();
-    const m = Math.floor(Math.random() * 12) + 1;
-    const d = Math.floor(Math.random() * 28) + 1;
-    let dt = new Date(now.getFullYear(), m - 1, d);
-    if (dt <= now) dt.setFullYear(now.getFullYear() + 1);
-    document.getElementById('dateInput').value = dt.toISOString().slice(0, 10);
+    const [year, month, day] = dateValue.split('-').map(Number);
+    const original = new Date(year, month - 1, day, 0, 0, 0, 0);
+
+    let next = new Date(now.getFullYear(), month - 1, day, 0, 0, 0, 0);
+    if (next < todayStart()) {
+      next.setFullYear(now.getFullYear() + 1);
+    }
+
+    let yearsPassed = now.getFullYear() - original.getFullYear();
+    const anniversaryThisYear = new Date(now.getFullYear(), month - 1, day, 0, 0, 0, 0);
+    if (todayStart() < anniversaryThisYear) yearsPassed--;
+
+    return {
+      original,
+      next,
+      yearsPassed: Math.max(0, yearsPassed)
+    };
   }
 
   function startCountdown() {
     const val = document.getElementById('dateInput').value;
+    const nameValue = document.getElementById('eventNameInput').value.trim();
+    const type = document.getElementById('countdownType').value;
+
     if (!val) { alert('Por favor elige una fecha.'); return; }
-    const [y, mo, d] = val.split('-').map(Number);
-    targetDate = new Date(y, mo - 1, d, 0, 0, 0, 0);
-    document.getElementById('targetDateLabel').textContent =
-      targetDate.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+
+    currentMode = type;
+    currentEventName = nameValue || (type === 'birthday' ? 'Mi aniversario' : 'Mi evento');
+    originalDateValue = val;
+
+    const metaInfo = document.getElementById('metaInfo');
+    const yearsPassedLabel = document.getElementById('yearsPassedLabel');
+    const nextEventLabel = document.getElementById('nextEventLabel');
+
+    if (type === 'event') {
+      const selectedDate = fromInputDate(val);
+      if (selectedDate < todayStart()) {
+        alert('Esta fecha ya pasó. Para evento único, elige una fecha desde hoy hacia adelante.');
+        return;
+      }
+      targetDate = selectedDate;
+      metaInfo.style.display = 'none';
+    } else {
+      const data = getNextAnniversary(val);
+      targetDate = data.next;
+      metaInfo.style.display = 'flex';
+      yearsPassedLabel.textContent = `Han pasado ${data.yearsPassed} año${data.yearsPassed === 1 ? '' : 's'}`;
+      nextEventLabel.textContent = `Próximo aniversario: ${formatDate(data.next)}`;
+    }
+
+    document.getElementById('targetDateLabel').textContent = `${currentEventName} · ${formatDate(targetDate)}`;
+    document.getElementById('esHoySub').textContent = type === 'birthday' ? `Hoy es ${currentEventName}` : `Llegó: ${currentEventName}`;
+
+    const params = new URLSearchParams();
+    params.set('type', type);
+    params.set('date', val);
+    params.set('name', currentEventName);
+    history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+
     document.getElementById('setup-screen').style.display = 'none';
     document.getElementById('countdown-screen').style.display = 'flex';
-    initCards(); tick();
+
+    clearInterval(intervalId);
+    initCards();
+    tick();
     intervalId = setInterval(tick, 1000);
   }
 
   function tick() {
     const diff = targetDate - Date.now();
-    if (diff <= 0) { clearInterval(intervalId); showEsHoy(); return; }
-    const t  = Math.floor(diff / 1000);
-    setGroup(['d0','d1','d2'], String(Math.floor(t / 86400)).padStart(3,'0'));
-    setGroup(['h0','h1'],      String(Math.floor(t / 3600) % 24).padStart(2,'0'));
-    setGroup(['m0','m1'],      String(Math.floor(t / 60) % 60).padStart(2,'0'));
-    setGroup(['s0','s1'],      String(t % 60).padStart(2,'0'));
+    if (diff <= 0) {
+      clearInterval(intervalId);
+      showEsHoy();
+      return;
+    }
+
+    const t = Math.floor(diff / 1000);
+    const days = Math.floor(t / 86400);
+
+    setGroup(['d0','d1','d2','d3'], String(Math.min(days, 9999)).padStart(4,'0'));
+    setGroup(['h0','h1'], String(Math.floor(t / 3600) % 24).padStart(2,'0'));
+    setGroup(['m0','m1'], String(Math.floor(t / 60) % 60).padStart(2,'0'));
+    setGroup(['s0','s1'], String(t % 60).padStart(2,'0'));
+  }
+
+  function getRemainingText() {
+    if (!targetDate) return null;
+
+    const diff = targetDate - Date.now();
+    if (diff <= 0) return `Hoy es: ${currentEventName}.`;
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const minutes = Math.floor(totalSeconds / 60) % 60;
+    const seconds = totalSeconds % 60;
+
+    if (currentMode === 'birthday') {
+      const anniversary = getNextAnniversary(originalDateValue);
+      return `Faltan ${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos para ${currentEventName}. Han pasado ${anniversary.yearsPassed} año${anniversary.yearsPassed === 1 ? '' : 's'}.`;
+    }
+
+    return `Faltan ${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos para ${currentEventName}.`;
+  }
+
+  async function shareCountdown() {
+    const remainingText = getRemainingText();
+    if (!remainingText) {
+      alert('Primero inicia una cuenta regresiva.');
+      return;
+    }
+
+    const shareText = `${remainingText}\n\nMira la cuenta regresiva aquí: ${window.location.href}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Cuenta regresiva',
+          text: shareText,
+          url: window.location.href
+        });
+      } catch (error) {
+        console.log('Compartir cancelado');
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        alert('Enlace copiado al portapapeles.');
+      } catch (error) {
+        alert(shareText);
+      }
+    }
   }
 
   function showEsHoy() {
@@ -436,12 +770,37 @@
   }
 
   function resetAll() {
-    clearInterval(intervalId); intervalId = null; targetDate = null;
+    clearInterval(intervalId);
+    intervalId = null;
+    targetDate = null;
+    originalDateValue = null;
+
+    history.replaceState(null, '', location.pathname);
+
     document.getElementById('countdown-screen').style.display = 'none';
     document.getElementById('esHoy-screen').style.display = 'none';
     document.getElementById('setup-screen').style.display = 'flex';
     document.getElementById('dateInput').value = '';
   }
+
+  function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    const date = params.get('date');
+    const name = params.get('name');
+
+    handleTypeChange();
+
+    if ((type === 'event' || type === 'birthday') && date) {
+      document.getElementById('countdownType').value = type;
+      handleTypeChange();
+      document.getElementById('dateInput').value = date;
+      if (name) document.getElementById('eventNameInput').value = name;
+      startCountdown();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadFromURL);
 </script>
 </body>
 </html>
