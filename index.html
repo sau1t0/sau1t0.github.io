@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown de Cumpleaños</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<!--
+  ══════════════════════════════════════
+  GOOGLE ADSENSE — 3 pasos para activar:
+  1. Crea cuenta en adsense.google.com
+  2. Reemplaza ca-pub-XXXXXXXXXX con tu Publisher ID
+  3. Reemplaza cada SLOT-ID con el ID de cada bloque de anuncio
+  ══════════════════════════════════════
+-->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --upper-bg: #181818;
+    --lower-bg: #101010;
+    --hinge-color: #0a0a0a;
+    --num-color: #c8c8c8;
+    --label-color: #555;
+    --shadow: rgba(0,0,0,0.9);
+    --card-h: clamp(58px, 14vw, 110px);
+    --card-w: clamp(44px, 10.5vw, 82px);
+    --fs: var(--card-h);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--num-color);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Banner fijo inferior — siempre visible */
+  .ad-banner-fixed {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 500;
+    background: #050505;
+    border-top: 1px solid #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+    padding: 5px 0;
+  }
+
+  /* Sección de anuncio inline */
+  .ad-section {
+    width: 100%;
+    border-top: 1px solid #161616;
+    border-bottom: 1px solid #161616;
+    background: #080808;
+    padding: 10px 0 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .ad-label {
+    font-size: .42rem;
+    letter-spacing: .32em;
+    color: #252525;
+    text-transform: uppercase;
+  }
+
+  /* Contenedor principal con espacio para banner fijo */
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 72px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* ── SETUP ── */
+  #setup-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: fadeIn .5s ease;
+    padding: 28px 20px 16px;
+    width: 100%;
+  }
+  .setup-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.2rem, 9vw, 4.5rem);
+    letter-spacing: .14em;
+    color: var(--num-color);
+    text-align: center;
+    line-height: 1;
+  }
+  .setup-subtitle {
+    font-size: .7rem; letter-spacing: .35em;
+    color: var(--label-color); text-transform: uppercase;
+    text-align: center; margin-bottom: 2px;
+  }
+  .input-group { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .input-label { font-size: .6rem; letter-spacing: .3em; color: var(--label-color); text-transform: uppercase; }
+
+  input[type="date"] {
+    background: #111; border: 1px solid #222; border-radius: 4px;
+    color: var(--num-color); font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem; padding: 12px 20px; outline: none; cursor: pointer;
+    letter-spacing: .1em; text-align: center;
+    -webkit-appearance: none; appearance: none; width: 230px;
+    transition: border-color .2s;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.45); cursor: pointer; }
+  input[type="date"]:focus { border-color: #444; }
+
+  .btn-start {
+    background: none; border: 1px solid #2e2e2e; border-radius: 4px;
+    color: var(--num-color); font-family: 'Share Tech Mono', monospace;
+    font-size: .8rem; letter-spacing: .3em; padding: 13px 36px;
+    cursor: pointer; text-transform: uppercase;
+    transition: background .2s, border-color .2s;
+  }
+  .btn-start:hover { background: #1a1a1a; border-color: #555; }
+
+  .btn-random {
+    background: none; border: none; color: var(--label-color);
+    font-family: 'Share Tech Mono', monospace; font-size: .6rem;
+    letter-spacing: .22em; cursor: pointer; text-transform: uppercase;
+    text-decoration: underline; text-underline-offset: 4px; transition: color .2s;
+  }
+  .btn-random:hover { color: #777; }
+
+  /* ── COUNTDOWN ── */
+  #countdown-screen {
+    display: none; flex-direction: column; align-items: center;
+    gap: clamp(12px, 3.5vw, 24px);
+    animation: fadeIn .8s ease;
+    padding: 20px 10px 12px;
+    width: 100%;
+  }
+  .countdown-header { text-align: center; }
+  .countdown-label { font-size: .6rem; letter-spacing: .4em; color: var(--label-color); text-transform: uppercase; margin-bottom: 5px; }
+  .countdown-date { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.3rem, 5vw, 2.5rem); letter-spacing: .18em; color: var(--num-color); }
+
+  .clock-grid {
+    display: flex; align-items: flex-start;
+    gap: clamp(8px, 2.5vw, 22px); flex-wrap: wrap; justify-content: center;
+  }
+  .clock-unit { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .digits-row { display: flex; gap: clamp(3px, 1vw, 7px); }
+  .unit-label { font-size: clamp(.5rem, 1.5vw, .65rem); letter-spacing: .38em; color: var(--label-color); text-transform: uppercase; }
+
+  .sep {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(7px, 2vw, 14px);
+    padding-bottom: clamp(24px, 6vw, 44px);
+    margin-top: clamp(4px, 1vw, 8px);
+  }
+  .dot { width: clamp(5px,1.2vw,8px); height: clamp(5px,1.2vw,8px); background: #2a2a2a; border-radius: 50%; }
+
+  /* ── FLIP CARD ── */
+  .flip-card {
+    position: relative; width: var(--card-w); height: var(--card-h);
+    border-radius: 6px; perspective: 600px; isolation: isolate;
+  }
+  .fc-upper, .fc-lower, .fc-flap {
+    position: absolute; left: 0; right: 0; height: 50%; overflow: hidden;
+  }
+  .fc-upper { top: 0; border-radius: 6px 6px 0 0; background: var(--upper-bg); z-index: 2; }
+  .fc-lower { bottom: 0; border-radius: 0 0 6px 6px; background: var(--lower-bg); z-index: 2; }
+  .flip-card::after {
+    content: ''; position: absolute; top: 50%; left: 0; right: 0;
+    height: 2px; background: var(--hinge-color); transform: translateY(-50%); z-index: 30;
+  }
+  .fc-digit {
+    font-family: 'Bebas Neue', sans-serif; font-size: var(--fs);
+    line-height: 1; color: var(--num-color);
+    position: absolute; left: 0; right: 0; text-align: center;
+    user-select: none; letter-spacing: .02em;
+  }
+  .fc-upper .fc-digit { top: 0; }
+  .fc-lower .fc-digit { top: -100%; }
+
+  .fc-flap-top {
+    top: 0; border-radius: 6px 6px 0 0; background: var(--upper-bg);
+    transform-origin: bottom center; z-index: 15; box-shadow: 0 4px 16px var(--shadow);
+  }
+  .fc-flap-top .fc-digit { top: 0; }
+  .fc-flap-bottom {
+    bottom: 0; border-radius: 0 0 6px 6px; background: var(--lower-bg);
+    transform-origin: top center; transform: rotateX(90deg);
+    z-index: 15; box-shadow: 0 8px 24px var(--shadow);
+  }
+  .fc-flap-bottom .fc-digit { top: -100%; }
+
+  @keyframes foldAway { from { transform: rotateX(0deg); } to { transform: rotateX(-90deg); } }
+  @keyframes unfoldIn  { from { transform: rotateX(90deg); } to { transform: rotateX(0deg); } }
+  .fc-flap-top.go    { animation: foldAway .22s ease-in  forwards; }
+  .fc-flap-bottom.go { animation: unfoldIn  .22s ease-out .22s forwards; }
+
+  .btn-reset {
+    background: none; border: none; color: #2e2e2e;
+    font-family: 'Share Tech Mono', monospace; font-size: .58rem;
+    letter-spacing: .28em; cursor: pointer; text-transform: uppercase;
+    transition: color .2s; margin-top: 2px;
+  }
+  .btn-reset:hover { color: #555; }
+
+  /* ── ES HOY ── */
+  #esHoy-screen {
+    display: none; position: fixed; inset: 0;
+    background: #000; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 300;
+    animation: fadeIn 1s ease;
+    padding-bottom: 72px;
+  }
+  .esHoy-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 24vw, 16rem);
+    color: #fff; letter-spacing: .06em; line-height: .88;
+    text-align: center; animation: pulse 2.2s ease-in-out infinite;
+  }
+  .esHoy-sub {
+    font-size: clamp(.55rem, 2vw, .85rem);
+    letter-spacing: .5em; color: #2a2a2a; text-transform: uppercase;
+  }
+  .btn-reset-esHoy {
+    margin-top: 16px; background: none; border: 1px solid #1e1e1e;
+    color: #2e2e2e; font-family: 'Share Tech Mono', monospace;
+    font-size: .6rem; letter-spacing: .28em; padding: 10px 26px;
+    cursor: pointer; text-transform: uppercase;
+    transition: color .2s, border-color .2s;
+  }
+  .btn-reset-esHoy:hover { color: #555; border-color: #444; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse  { 0%,100% { opacity:1; } 50% { opacity:.8; } }
+
+  ins.adsbygoogle { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══ BANNER FIJO INFERIOR — visible en todas las pantallas ══ -->
+<div class="ad-banner-fixed">
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:320px;height:50px"
+       data-ad-client="ca-pub-XXXXXXXXXX"
+       data-ad-slot="SLOT-BANNER-FIJO"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<div class="screen-wrap">
+
+  <!-- ══ PANTALLA 1: SETUP ══ -->
+  <div id="setup-screen">
+    <div>
+      <p class="setup-subtitle">Cuenta regresiva para</p>
+      <h1 class="setup-title">Tu Cumpleaños</h1>
+    </div>
+
+    <!-- AD 300×250 en pantalla de inicio -->
+    <div class="ad-section">
+      <span class="ad-label">Publicidad</span>
+      <ins class="adsbygoogle"
+           style="display:inline-block;width:300px;height:250px"
+           data-ad-client="ca-pub-XXXXXXXXXX"
+           data-ad-slot="SLOT-SETUP-RECT"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="dateInput">Fecha de Cumpleaños</label>
+      <input type="date" id="dateInput">
+      <button class="btn-random" onclick="setRandom()">↻ Fecha Aleatoria</button>
+    </div>
+    <button class="btn-start" onclick="startCountdown()">Iniciar Countdown</button>
+  </div>
+
+  <!-- ══ PANTALLA 2: COUNTDOWN ══ -->
+  <div id="countdown-screen">
+    <div class="countdown-header">
+      <p class="countdown-label">Faltan para</p>
+      <div class="countdown-date" id="targetDateLabel">—</div>
+    </div>
+
+    <div class="clock-grid">
+      <div class="clock-unit">
+        <div class="digits-row">
+          <div class="flip-card" id="d0"></div>
+          <div class="flip-card" id="d1"></div>
+          <div class="flip-card" id="d2"></div>
+        </div>
+        <span class="unit-label">Días</span>
+      </div>
+      <div class="sep"><div class="dot"></div><div class="dot"></div></div>
+      <div class="clock-unit">
+        <div class="digits-row">
+          <div class="flip-card" id="h0"></div>
+          <div class="flip-card" id="h1"></div>
+        </div>
+        <span class="unit-label">Horas</span>
+      </div>
+      <div class="sep"><div class="dot"></div><div class="dot"></div></div>
+      <div class="clock-unit">
+        <div class="digits-row">
+          <div class="flip-card" id="m0"></div>
+          <div class="flip-card" id="m1"></div>
+        </div>
+        <span class="unit-label">Minutos</span>
+      </div>
+      <div class="sep"><div class="dot"></div><div class="dot"></div></div>
+      <div class="clock-unit">
+        <div class="digits-row">
+          <div class="flip-card" id="s0"></div>
+          <div class="flip-card" id="s1"></div>
+        </div>
+        <span class="unit-label">Segundos</span>
+      </div>
+    </div>
+
+    <!-- AD 320×100 debajo del reloj -->
+    <div class="ad-section">
+      <span class="ad-label">Publicidad</span>
+      <ins class="adsbygoogle"
+           style="display:inline-block;width:320px;height:100px"
+           data-ad-client="ca-pub-XXXXXXXXXX"
+           data-ad-slot="SLOT-COUNTDOWN-BANNER"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <button class="btn-reset" onclick="resetAll()">← Cambiar fecha</button>
+  </div>
+
+</div><!-- /screen-wrap -->
+
+<!-- ══ PANTALLA 3: ES HOY ══ -->
+<div id="esHoy-screen">
+  <div class="esHoy-text">ES<br>HOY</div>
+  <div class="esHoy-sub">¡Feliz Cumpleaños!</div>
+
+  <!-- AD pequeño en celebración -->
+  <div class="ad-section" style="background:transparent; border-color:#111; margin-top:8px;">
+    <span class="ad-label">Publicidad</span>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:300px;height:100px"
+         data-ad-client="ca-pub-XXXXXXXXXX"
+         data-ad-slot="SLOT-ESHOY-BANNER"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <button class="btn-reset-esHoy" onclick="resetAll()">← Volver</button>
+</div>
+
+<script>
+  let targetDate = null;
+  let intervalId = null;
+  const ALL_IDS = ['d0','d1','d2','h0','h1','m0','m1','s0','s1'];
+
+  function cardHTML(ch) {
+    return `<div class="fc-upper"><span class="fc-digit">${ch}</span></div>
+            <div class="fc-lower"><span class="fc-digit">${ch}</span></div>`;
+  }
+
+  function flip(el, newCh) {
+    const oldCh = el.dataset.val;
+    if (oldCh === newCh) return;
+    el.innerHTML = `
+      <div class="fc-upper"><span class="fc-digit">${newCh}</span></div>
+      <div class="fc-lower"><span class="fc-digit">${oldCh}</span></div>
+      <div class="fc-flap fc-flap-top go"><span class="fc-digit">${oldCh}</span></div>
+      <div class="fc-flap fc-flap-bottom go"><span class="fc-digit">${newCh}</span></div>`;
+    el.dataset.val = newCh;
+    setTimeout(() => { if (el.dataset.val === newCh) el.innerHTML = cardHTML(newCh); }, 550);
+  }
+
+  function setGroup(ids, str) {
+    str.split('').forEach((ch, i) => { const el = document.getElementById(ids[i]); if (el) flip(el, ch); });
+  }
+
+  function initCards() {
+    ALL_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      el.dataset.val = '0';
+      el.innerHTML = cardHTML('0');
+    });
+  }
+
+  function setRandom() {
+    const now = new Date();
+    const m = Math.floor(Math.random() * 12) + 1;
+    const d = Math.floor(Math.random() * 28) + 1;
+    let dt = new Date(now.getFullYear(), m - 1, d);
+    if (dt <= now) dt.setFullYear(now.getFullYear() + 1);
+    document.getElementById('dateInput').value = dt.toISOString().slice(0, 10);
+  }
+
+  function startCountdown() {
+    const val = document.getElementById('dateInput').value;
+    if (!val) { alert('Por favor elige una fecha.'); return; }
+    const [y, mo, d] = val.split('-').map(Number);
+    targetDate = new Date(y, mo - 1, d, 0, 0, 0, 0);
+    document.getElementById('targetDateLabel').textContent =
+      targetDate.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('countdown-screen').style.display = 'flex';
+    initCards(); tick();
+    intervalId = setInterval(tick, 1000);
+  }
+
+  function tick() {
+    const diff = targetDate - Date.now();
+    if (diff <= 0) { clearInterval(intervalId); showEsHoy(); return; }
+    const t  = Math.floor(diff / 1000);
+    setGroup(['d0','d1','d2'], String(Math.floor(t / 86400)).padStart(3,'0'));
+    setGroup(['h0','h1'],      String(Math.floor(t / 3600) % 24).padStart(2,'0'));
+    setGroup(['m0','m1'],      String(Math.floor(t / 60) % 60).padStart(2,'0'));
+    setGroup(['s0','s1'],      String(t % 60).padStart(2,'0'));
+  }
+
+  function showEsHoy() {
+    document.getElementById('countdown-screen').style.display = 'none';
+    document.getElementById('esHoy-screen').style.display = 'flex';
+  }
+
+  function resetAll() {
+    clearInterval(intervalId); intervalId = null; targetDate = null;
+    document.getElementById('countdown-screen').style.display = 'none';
+    document.getElementById('esHoy-screen').style.display = 'none';
+    document.getElementById('setup-screen').style.display = 'flex';
+    document.getElementById('dateInput').value = '';
+  }
+</script>
+</body>
+</html>
