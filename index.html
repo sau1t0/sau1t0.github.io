@@ -3,8 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cuenta Regresiva</title>
-<meta name="description" content="Crea una cuenta regresiva para eventos, cumpleaños, aniversarios, viajes, exámenes o lanzamientos.">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+<title>Cuenta Regresiva Online | Contador para eventos</title>
+<meta name="description" content="Crea una cuenta regresiva online para cumpleaños, aniversarios, exámenes, viajes, lanzamientos y eventos importantes. Comparte el tiempo restante con un enlace directo.">
+<meta name="keywords" content="cuenta regresiva, contador online, countdown, temporizador, cumpleaños, aniversario, eventos, cuenta regresiva online">
+<meta name="author" content="Sau1t0">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://sau1t0.github.io/">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PE">
+<meta property="og:title" content="Cuenta Regresiva Online para eventos">
+<meta property="og:description" content="Crea y comparte una cuenta regresiva para cualquier fecha importante.">
+<meta property="og:url" content="https://sau1t0.github.io/">
+<meta property="og:site_name" content="Cuenta Regresiva Online">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cuenta Regresiva Online para eventos">
+<meta name="twitter:description" content="Crea y comparte una cuenta regresiva para cumpleaños, aniversarios, exámenes, viajes y eventos.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Cuenta Regresiva Online",
+  "url": "https://sau1t0.github.io/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "es",
+  "description": "Herramienta online para crear cuentas regresivas de eventos, cumpleaños, aniversarios, viajes, exámenes y lanzamientos."
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <!-- GOOGLE ADSENSE -->
@@ -171,7 +203,31 @@
     transition: background .2s, border-color .2s;
   }
 
-  .btn-start:hover, .btn-share:hover { background: #1a1a1a; border-color: #555; }
+  .btn-start:hover, .btn-share:hover, .btn-calendar:hover, .btn-reminder:hover { background: #1a1a1a; border-color: #555; }
+
+  .btn-calendar, .btn-reminder {
+    background: none;
+    border: 1px solid #242424;
+    border-radius: 8px;
+    color: #8a8a8a;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .58rem;
+    letter-spacing: .18em;
+    padding: 11px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background .2s, border-color .2s, color .2s;
+  }
+
+  .reminder-status {
+    width: min(92vw, 560px);
+    min-height: 1.2em;
+    color: #4d4d4d;
+    font-size: .56rem;
+    letter-spacing: .12em;
+    text-align: center;
+    line-height: 1.5;
+  }
 
   .btn-random {
     background: none;
@@ -389,6 +445,64 @@
 
   ins.adsbygoogle { display: block; }
 
+  .seo-content {
+    width: min(920px, calc(100% - 32px));
+    margin: 32px auto 96px;
+    padding: 24px 18px;
+    border-top: 1px solid #171717;
+    color: #747474;
+    text-align: center;
+    line-height: 1.7;
+    font-size: .78rem;
+  }
+
+  .seo-content h2, .seo-content h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--num-color);
+    letter-spacing: .08em;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .seo-content h2 { font-size: clamp(1.8rem, 5vw, 2.8rem); }
+  .seo-content h3 { font-size: clamp(1.3rem, 4vw, 1.8rem); margin-top: 22px; }
+
+  .seo-content p { margin: 0 auto 12px; max-width: 760px; }
+
+  .seo-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 14px;
+    margin: 12px auto 0;
+    max-width: 760px;
+    color: #8a8a8a;
+  }
+
+  .seo-list li::before { content: '• '; color: #3f3f3f; }
+
+  .site-footer {
+    width: min(920px, calc(100% - 32px));
+    margin: -72px auto 84px;
+    padding: 18px 0;
+    border-top: 1px solid #151515;
+    text-align: center;
+    color: #4f4f4f;
+    font-size: .62rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .site-footer a {
+    color: #6c6c6c;
+    text-decoration: none;
+    margin: 0 8px;
+  }
+
+  .site-footer a:hover { color: #aaa; }
+
+
   @media (max-width: 520px) {
     .sep { display: none; }
     .clock-grid { gap: 15px; }
@@ -397,6 +511,7 @@
 </style>
 </head>
 <body>
+<noscript>Activa JavaScript para usar la cuenta regresiva online.</noscript>
 
 <div class="ad-banner-fixed">
   <ins class="adsbygoogle"
@@ -426,7 +541,7 @@
     <div class="form-card">
       <div class="input-group">
         <label class="input-label" for="eventNameInput">Nombre del evento</label>
-        <input type="text" id="eventNameInput" maxlength="40" placeholder="Ej: Examen final">
+        <input type="text" id="eventNameInput" maxlength="60" placeholder="Ej: Examen final">
       </div>
 
       <div class="input-group">
@@ -505,8 +620,12 @@
 
     <div class="action-row">
       <button class="btn-share" onclick="shareCountdown()">Compartir</button>
+      <button class="btn-calendar" onclick="downloadICSReminder()">Calendario .ics</button>
+      <button class="btn-calendar" onclick="openGoogleCalendar()">Google Calendar</button>
+      <button class="btn-reminder" onclick="setLocalReminder()">Recordatorio local</button>
       <button class="btn-reset" onclick="resetAll()">← Cambiar fecha</button>
     </div>
+    <p class="reminder-status" id="reminderStatus"></p>
   </div>
 
 </div>
@@ -526,6 +645,33 @@
 
   <button class="btn-reset-esHoy" onclick="resetAll()">← Volver</button>
 </div>
+
+
+<section class="seo-content" id="acerca">
+  <h2>Cuenta regresiva online para cualquier evento</h2>
+  <p>
+    Esta herramienta permite crear una cuenta regresiva personalizada para fechas importantes como cumpleaños,
+    aniversarios, exámenes, viajes, lanzamientos, estrenos o entregas de proyectos.
+  </p>
+  <p>
+    Puedes elegir entre un evento único con fecha futura o un cumpleaños/aniversario que se repite cada año.
+    También puedes compartir el contador mediante un enlace directo con la fecha y el nombre del evento.
+  </p>
+  <h3>Usos comunes</h3>
+  <ul class="seo-list">
+    <li>Cuenta regresiva para cumpleaños</li>
+    <li>Contador para aniversarios</li>
+    <li>Temporizador para exámenes</li>
+    <li>Cuenta regresiva para viajes</li>
+    <li>Countdown para lanzamientos</li>
+  </ul>
+</section>
+
+<footer class="site-footer">
+  <a href="./acerca.html">Acerca</a>
+  <a href="./contacto.html">Contacto</a>
+  <a href="./politica-privacidad.html">Privacidad</a>
+</footer>
 
 <script>
   let targetDate = null;
@@ -555,6 +701,53 @@
 
   function formatDate(date) {
     return date.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  function sanitizeEventName(value) {
+    return String(value || '')
+      .replace(/[\u0000-\u001F\u007F<>`{}]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 60);
+  }
+
+  function isValidDateValue(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const [y, m, d] = value.split('-').map(Number);
+    if (y < 1900 || y > 9999 || m < 1 || m > 12 || d < 1 || d > 31) return false;
+    const dt = new Date(y, m - 1, d, 0, 0, 0, 0);
+    return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+  }
+
+  function setReminderStatus(message) {
+    const el = document.getElementById('reminderStatus');
+    if (el) el.textContent = message || '';
+  }
+
+  function escapeICS(value) {
+    return String(value || '')
+      .replace(/\\/g, '\\\\')
+      .replace(/\r?\n/g, '\\n')
+      .replace(/,/g, '\\,')
+      .replace(/;/g, '\\;');
+  }
+
+  function toICSDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+
+  function getReminderTitle() {
+    return currentMode === 'birthday'
+      ? `Aniversario: ${currentEventName}`
+      : `Evento: ${currentEventName}`;
+  }
+
+  function getCalendarDescription() {
+    const text = getRemainingText() || `Cuenta regresiva para ${currentEventName}.`;
+    return `${text} Generado desde ${location.origin}${location.pathname}`;
   }
 
   function cardHTML(ch) {
@@ -651,10 +844,11 @@
 
   function startCountdown() {
     const val = document.getElementById('dateInput').value;
-    const nameValue = document.getElementById('eventNameInput').value.trim();
+    const nameValue = sanitizeEventName(document.getElementById('eventNameInput').value);
     const type = document.getElementById('countdownType').value;
 
     if (!val) { alert('Por favor elige una fecha.'); return; }
+    if (!isValidDateValue(val)) { alert('Fecha inválida. Usa una fecha real.'); return; }
 
     currentMode = type;
     currentEventName = nameValue || (type === 'birthday' ? 'Mi aniversario' : 'Mi evento');
@@ -691,6 +885,7 @@
 
     document.getElementById('setup-screen').style.display = 'none';
     document.getElementById('countdown-screen').style.display = 'flex';
+    setReminderStatus('');
 
     clearInterval(intervalId);
     initCards();
@@ -764,6 +959,113 @@
     }
   }
 
+  function downloadICSReminder() {
+    if (!targetDate) {
+      alert('Primero inicia una cuenta regresiva.');
+      return;
+    }
+
+    const endDate = new Date(targetDate);
+    endDate.setDate(endDate.getDate() + 1);
+
+    const title = escapeICS(getReminderTitle());
+    const description = escapeICS(getCalendarDescription());
+    const uid = `${Date.now()}-${Math.random().toString(36).slice(2)}@sau1t0.github.io`;
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Sau1t0//Cuenta Regresiva//ES',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')}`,
+      `DTSTART;VALUE=DATE:${toICSDate(targetDate)}`,
+      `DTEND;VALUE=DATE:${toICSDate(endDate)}`,
+      `SUMMARY:${title}`,
+      `DESCRIPTION:${description}`,
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:${title}`,
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safeFileName = currentEventName.toLowerCase().replace(/[^a-z0-9áéíóúñü]+/gi, '-').replace(/^-|-$/g, '') || 'recordatorio';
+    a.href = url;
+    a.download = `${safeFileName}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setReminderStatus('Archivo .ics generado. Puedes importarlo en Google Calendar, Apple Calendar u Outlook.');
+  }
+
+  function openGoogleCalendar() {
+    if (!targetDate) {
+      alert('Primero inicia una cuenta regresiva.');
+      return;
+    }
+
+    const endDate = new Date(targetDate);
+    endDate.setDate(endDate.getDate() + 1);
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: getReminderTitle(),
+      dates: `${toICSDate(targetDate)}/${toICSDate(endDate)}`,
+      details: getCalendarDescription()
+    });
+
+    window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, '_blank', 'noopener,noreferrer');
+    setReminderStatus('Se abrió Google Calendar en una pestaña nueva. Revisa y guarda el evento allí.');
+  }
+
+  function setLocalReminder() {
+    if (!targetDate) {
+      alert('Primero inicia una cuenta regresiva.');
+      return;
+    }
+
+    if (!('Notification' in window)) {
+      setReminderStatus('Este navegador no permite notificaciones locales. Usa el archivo .ics.');
+      return;
+    }
+
+    const msUntilEvent = targetDate - Date.now();
+    if (msUntilEvent <= 0) {
+      setReminderStatus('El evento ya llegó.');
+      return;
+    }
+
+    const maxSafeDelay = 24 * 60 * 60 * 1000;
+    if (msUntilEvent > maxSafeDelay) {
+      setReminderStatus('Para fechas lejanas usa Calendario .ics o Google Calendar. Las notificaciones locales solo son fiables en las próximas 24 horas.');
+      return;
+    }
+
+    Notification.requestPermission().then(permission => {
+      if (permission !== 'granted') {
+        setReminderStatus('Permiso de notificación denegado. Usa Calendario .ics o Google Calendar.');
+        return;
+      }
+
+      setTimeout(() => {
+        new Notification('Cuenta regresiva', {
+          body: `${currentEventName} ha llegado.`,
+          tag: 'cuenta-regresiva-evento'
+        });
+      }, msUntilEvent);
+
+      setReminderStatus('Recordatorio local activado. Mantén el navegador abierto para recibirlo.');
+    });
+  }
+
   function showEsHoy() {
     document.getElementById('countdown-screen').style.display = 'none';
     document.getElementById('esHoy-screen').style.display = 'flex';
@@ -781,6 +1083,7 @@
     document.getElementById('esHoy-screen').style.display = 'none';
     document.getElementById('setup-screen').style.display = 'flex';
     document.getElementById('dateInput').value = '';
+    setReminderStatus('');
   }
 
   function loadFromURL() {
@@ -791,11 +1094,11 @@
 
     handleTypeChange();
 
-    if ((type === 'event' || type === 'birthday') && date) {
+    if ((type === 'event' || type === 'birthday') && date && isValidDateValue(date)) {
       document.getElementById('countdownType').value = type;
       handleTypeChange();
       document.getElementById('dateInput').value = date;
-      if (name) document.getElementById('eventNameInput').value = name;
+      if (name) document.getElementById('eventNameInput').value = sanitizeEventName(name);
       startCountdown();
     }
   }

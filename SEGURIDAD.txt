@@ -1,0 +1,16 @@
+Verificación de seguridad aplicada
+
+- La web sigue siendo estática: no usa backend, base de datos ni contraseñas.
+- El nombre del evento se limpia antes de usarse y se limita a 60 caracteres.
+- Las fechas compartidas por URL se validan antes de iniciar la cuenta regresiva.
+- El texto visible se inserta con textContent, no con innerHTML, para reducir riesgo de inyección desde el formulario.
+- Los enlaces de calendario se generan con URLSearchParams para evitar URLs mal formadas.
+- El archivo .ics se genera en el navegador; no requiere OAuth ni acceso directo a cuentas del usuario.
+- La notificación local pide permiso explícito y se limita a eventos dentro de las próximas 24 horas porque los temporizadores largos del navegador no son confiables.
+- No agregué una conexión OAuth directa a Google Calendar porque sería más compleja y sensible para una web estática. La opción segura es abrir Google Calendar con los datos prellenados para que el usuario confirme manualmente.
+
+Pendiente para producción
+
+- Reemplazar los SLOT-* de AdSense por IDs reales.
+- Evitar pedir datos personales en el nombre del evento si el enlace se compartirá públicamente.
+- Si luego migras a un hosting con headers configurables, conviene añadir una Content-Security-Policy completa probada con AdSense.
